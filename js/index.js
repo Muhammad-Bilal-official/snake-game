@@ -176,11 +176,17 @@ downMobileButton.addEventListener("click", () => {
         lastKeyPressed = "down";
     }
 });
-
+function pauseResume(){
+    pauseGame = (pauseGame) ? false : true;
+            if (pauseGame)
+                gameAudio.pause();
+            else
+                gameAudio.play();
+}
+document.querySelector("#pauseBtnContainer button").addEventListener("click",pauseResume);
 document.addEventListener("keydown", (e) => {
     // snakeDirection = { x: 0, y: 1 };
     // snakeMoveAudio.play();
-
     gameAudio.play();
     switch (e.key) {
         case "ArrowUp":
@@ -213,11 +219,7 @@ document.addEventListener("keydown", (e) => {
             }
             break;
         case " ":
-            pauseGame = (pauseGame) ? false : true;
-            if (pauseGame)
-                gameAudio.pause();
-            else
-                gameAudio.play();
+            pauseResume;
             console.log(gamepause);
             break;
         default:

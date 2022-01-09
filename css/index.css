@@ -30,6 +30,18 @@
     font-weight: bolder;
     font-size: 7vmin
 }
+#pauseBtnContainer{
+    position: absolute;
+    top:25%;
+    right: 5%;
+}
+#pauseBtnContainer button{
+    background:linear-gradient(green,skyblue);
+    font-size: 5vmin;
+    border-radius: 10px;
+    padding: 5%;
+
+}
 #gameBoard{
     width: 50vw;
     height: 90vh;
@@ -38,8 +50,7 @@
     grid-template-columns: repeat(18,1fr);
     border: 10px solid black;
     border-radius: 20px;
-    background:linear-gradient(skyblue,blue);
-
+    background:linear-gradient(green,yellow,green);
 }
 .snakeHead{
     background-color: black;
@@ -76,10 +87,15 @@
 #mobileControlButtonsContainer div{
     background-color: black;
     color: rgb(238, 246, 246);
-    border-radius: 20px;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+#mobileControlButtonsContainer div button{
+    background-color: black;
+    color: white;
+    border-color: black;
 }
 #upperMobileButton{
     border: 2px solid black;
@@ -111,22 +127,49 @@
 }
 
 
-@media screen and (max-width:1300px) {
+@media screen and (max-width:700px) {
     #gameBoard{
-    width: 65vw;
+    width: 70vw;
     height: 55vh;
-    margin-left: -20%;
-    margin-top: -70%;
+    margin-left: -25%;
+    margin-top: -75%;
     }
     #scoreBox{
         right: 3%;
-        font-size: 5vmin;
+        font-size: 6vmin;
     }
     #highScoreBox{
-        right: 3%;
-        font-size: 4.5vmin;
+        top: 10%;
+        right: 2%;
+        font-size: 5vmin;
     }
     #mobileShowOnly{
         display: block;
     }
+    #pauseBtnContainer{
+        top: 15%;
+    }
+}
+@media screen and ((min-width:700px) and (max-width:1000px)) {
+    #gameBoard{
+    /* width: 70vw;
+    height: 55vh; */
+    margin-left: -50%; 
+    margin-top: -60%;
+    }
+    /* #scoreBox{
+        right: 3%;
+        font-size: 6vmin;
+    }
+    #highScoreBox{
+        top: 10%;
+        right: 2%;
+        font-size: 5vmin;
+    }*/
+    #mobileShowOnly{
+        display: block;
+    }
+    #pauseBtnContainer{
+        top: 15%;
+    } 
 }
