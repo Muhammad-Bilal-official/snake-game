@@ -8,8 +8,17 @@ let highScoreBox = document.getElementById("highScoreBox");
 let lastPaintTime = 0;
 let speed = 10;
 let score = 0;
-let HighScore = 0;
+let highScore = localStorage.getItem("highScore");
+let lastKeyPressed;
+
+if (highScore == null) {
+    localStorage.setItem("highScore", JSON.stringify(0));
+}
+else {
+    highScore = JSON.parse(highScore);
+}
 let pauseGame = false;
+
 
 
 
@@ -43,7 +52,7 @@ function mainControllerOfGame(cTime) {
 window.requestAnimationFrame(mainControllerOfGame);
 
 function isCollide() {
-    if (snakeArray[0].x <= 0 || snakeArray[0].x >= 18 || snakeArray[0].y <= 0 || snakeArray[0].y >= 18) {
+    if (snakeArray[0].x < 0 || snakeArray[0].x >= 19 || snakeArray[0].y < 0 || snakeArray[0].y >= 19) {
         return true;
     }
     for (let i = 1; i < snakeArray.length; i++) {
@@ -51,6 +60,7 @@ function isCollide() {
         if (snakeArray[0].x === element.x && snakeArray[0].y === element.y)
             return true;
     }
+    // console.log(snakeArray[0].x,snakeArray[0].y);
     return false;
 }
 function gameEngine() {
@@ -58,7 +68,6 @@ function gameEngine() {
     if (isCollide()) {
         gameOverAudio.play();
         gameAudio.pause();
-        alert("GameOver");
         snakeArray = [
             {
                 x: 13,
@@ -70,15 +79,29 @@ function gameEngine() {
             x: 0,
             y: 0
         };//
+        if (score > highScore) {
+            localStorage.setItem("highScore", JSON.stringify(score));
+            highScore = score;
+        }
+        score = 0;
+        alert("GameOver");
     }
     // Generting New Food After Eat 
+    let foodInSnakeBody;
     if (snakeArray[0].x === snakeFoodPosition.x && snakeArray[0].y === snakeFoodPosition.y) {
         eatFoodAudio.play();
         snakeArray.unshift({ x: snakeArray[0].x + snakeDirection.x, y: snakeArray[0].y + snakeDirection.y });
-        snakeFoodPosition = {
-            x: Math.round(2 + (18 - 2) * Math.random()),
-            y: Math.round(2 + (18 - 2) * Math.random()),
-        }
+        do {
+            foodInSnakeBody = 0;
+            snakeFoodPosition = {
+                x: Math.round(2 + (18 - 2) * Math.random()),
+                y: Math.round(2 + (18 - 2) * Math.random()),
+            }
+            snakeArray.forEach(element => {
+                if (element.x == snakeFoodPosition.x && element.y == snakeFoodPosition.y)
+                    foodInSnakeBody++;
+            });
+        } while (foodInSnakeBody != 0);
         score++;
     }
     // // Generate New Food 
@@ -105,8 +128,14 @@ function gameEngine() {
         snakeElement.style.gridColumnStart = snakeArray[i].x;
         gameBoard.appendChild(snakeElement);
     }
-    // Update the score 
+    // Update the score and High Score
     scoreBox.innerText = `Score : ${score}`
+    if (highScore > score)
+        highScoreBox.innerText = `High Score : ${highScore}`
+    else
+        highScoreBox.innerText = `High Score : ${score}`
+
+
     // Display the Food 
     let snakeFood = document.createElement("div");
     snakeFood.classList.add("snakeFood");
@@ -120,20 +149,32 @@ let rightMobileButton = document.getElementById("rightMobileButton");
 let downMobileButton = document.getElementById("downMobileButton");
 
 upperMobileButton.addEventListener("click", () => {
-    snakeDirection.x = 0;
-    snakeDirection.y = -1;
+    if (lastKeyPressed !== "down" || snakeArray.length===1) {
+        snakeDirection.x = 0;
+        snakeDirection.y = -1;
+        lastKeyPressed = "up";
+    }
 });
 leftMobileButton.addEventListener("click", () => {
-    snakeDirection.x = -1;
-    snakeDirection.y = 0;
+    if (lastKeyPressed !== "right"|| snakeArray.length===1 ) {
+        snakeDirection.x = -1;
+        snakeDirection.y = 0;
+        lastKeyPressed = "left";
+    }
 });
 rightMobileButton.addEventListener("click", () => {
-    snakeDirection.x = 1;
-    snakeDirection.y = 0;
+    if (lastKeyPressed !== "left" || snakeArray.length===1) {
+        snakeDirection.x = 1;
+        snakeDirection.y = 0;
+        lastKeyPressed = "right";
+    }
 });
 downMobileButton.addEventListener("click", () => {
-    snakeDirection.x = 0;
-    snakeDirection.y = 1;
+    if (lastKeyPressed !== "up" || snakeArray.length===1) {
+        snakeDirection.x = 0;
+        snakeDirection.y = 1;
+        lastKeyPressed = "down";
+    }
 });
 
 document.addEventListener("keydown", (e) => {
@@ -141,23 +182,35 @@ document.addEventListener("keydown", (e) => {
     // snakeMoveAudio.play();
 
     gameAudio.play();
-
     switch (e.key) {
         case "ArrowUp":
-            snakeDirection.x = 0;
-            snakeDirection.y = -1;
+            if (lastKeyPressed !== "down" || snakeArray.length===1) {
+                snakeDirection.x = 0;
+                snakeDirection.y = -1;
+                lastKeyPressed = "up";
+            }
             break;
         case "ArrowDown":
-            snakeDirection.x = 0;
-            snakeDirection.y = 1;
+            if (lastKeyPressed !== "up" || snakeArray.length===1) {
+                snakeDirection.x = 0;
+                snakeDirection.y = 1;
+                lastKeyPressed = "down";
+            }
             break;
         case "ArrowLeft":
-            snakeDirection.x = -1;
-            snakeDirection.y = 0;
+            if (lastKeyPressed !== "right" || snakeArray.length===1) {
+                snakeDirection.x = -1;
+                snakeDirection.y = 0;
+                lastKeyPressed = "left";
+            }
+
             break;
         case "ArrowRight":
-            snakeDirection.x = 1;
-            snakeDirection.y = 0;
+            if (lastKeyPressed !== "left" || snakeArray.length===1) {
+                snakeDirection.x = 1;
+                snakeDirection.y = 0;
+                lastKeyPressed = "right";
+            }
             break;
         case " ":
             pauseGame = (pauseGame) ? false : true;
